@@ -31,7 +31,29 @@ const cardReducer = (state, action) => {
         totalAmount: updateTotalAmount,
       };
     },
-    REMOVE: () => {},
+
+    REMOVE: () => {
+      const existingIndex = state.items.findIndex(
+        (item) => item.id === action.id
+      );
+      const updateTotalAmount =
+        state.totalAmount - state.items[existingIndex].price;
+      let updateItems;
+      if (state.items[existingIndex].amount === 1) {
+        updateItems = state.items.filter((item) => item.id !== action.id);
+      } else {
+        updateItems = [...state.items];
+        updateItems[existingIndex] = {
+          ...state.items[existingIndex],
+          amount: state.items[existingIndex].amount - 1,
+        };
+      }
+
+      return {
+        items: updateItems,
+        totalAmount: updateTotalAmount,
+      };
+    },
   };
   return actionTypeHandle[action.type]
     ? actionTypeHandle[action.type]()
